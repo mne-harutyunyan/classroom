@@ -1,0 +1,67 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+venv/
+ENV/
+env/
+env.bak/
+venv.bak/
+.venv/
+
+# Environment variable files
+.env
+*.env
+
+# IDE and editor directories and files
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# Test and coverage reports
+.cache/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+
+# Linting and type checking
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# MongoDB local data (if using a local MongoDB data directory)
+data/
+
+# OS-specific files
+.DS_Store
+Thumbs.db
