@@ -1,7 +1,7 @@
 from mongoengine import Document, StringField, IntField, DateTimeField, BooleanField, EnumField
-from app.models.schedule import RoomName, RoomType, Status
+from app.models.reservation import RoomName, RoomType, Status
 
-class ScheduleSchema(Document):
+class ReservationSchema(Document):
   _id = IntField
   roomType = EnumField(RoomType)
   roomName = EnumField(RoomName)

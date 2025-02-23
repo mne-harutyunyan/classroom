@@ -10,11 +10,12 @@ class Role(str, Enum):
 
 class User(BaseModel):
   _id: Optional[ObjectId] = None
+  student_code: str
   name: str
   surname: str
   email: str
   phone_number: str
-  role:Role
+  role: Role
   created_at: datetime
 
   model_config = ConfigDict(from_attributes=True)

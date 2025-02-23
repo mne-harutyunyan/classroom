@@ -32,8 +32,9 @@ class RoomName(str,Enum):
   recording_room = "Recording room"
   call_room_N2 = "Call Room N2"
 
-class Schedule(BaseModel):
+class Reservation(BaseModel):
   _id: Optional[ObjectId] = None
+  student_code: str = Field(...)
   roomType: RoomType = Field(...)
   roomName: RoomName = Field(...)
   startDate: datetime = Field(...)
