@@ -1,8 +1,8 @@
-from pydantic import BaseModel, ConfigDict, Field, model_validator
-from datetime import datetime
-from typing import Optional
 from enum import Enum
 from bson import ObjectId
+from typing import Optional
+from datetime import datetime
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 class RoomType(str, Enum):
   classroom = "Classroom"
