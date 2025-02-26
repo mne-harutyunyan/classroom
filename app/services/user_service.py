@@ -38,12 +38,7 @@ async def create_reservation(data: dict) -> dict:
   hello = await reservations_collection.insert_one(reservation_dict)
   send_sms(student['phone_number'], "Reservation request submitted. Awaiting admin approval.")
   reservation_id = str(hello.inserted_id)
-  message = f'''📢 New Reservation Request:\n
-                👤 Student Code: {reservation.student_code}\n
-                🏫 Classroom: {reservation.roomName.name}\n
-                🕒 Time: \n From: {reservation.startDate}\n
-                To: {reservation.endDate}\n
-                Reservation ID: {reservation_id}'''
+  message = f"📢 New Reservation Request:\n👤 Student Code: {reservation.student_code}\n🏫 Classroom: {reservation.roomName.name}\n🕒 Time: \n From: {reservation.startDate} \n To: {reservation.endDate}\n Reservation ID: {reservation_id}"
   await send_slack_notification(message,reservation_id)
   return {"message": "Reservation request submitted and awaiting approval.", "status_code": 201}
 
