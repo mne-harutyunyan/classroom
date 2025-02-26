@@ -25,7 +25,7 @@ async def user_reject_reservation(reservation_id):
   except Exception as e:
     return {"error": str(e), "status_code": 500}
 
-@user_bp.route('/get_approved_reservations', methods=['GET'])
+@user_bp.route('/', methods=['GET'])
 async def get_approved_reservations():
   try:
     filters = request.args

@@ -1,7 +1,8 @@
-from quart import Blueprint, request, jsonify
-
+from quart import Blueprint, request, jsonify,json
+from bson import ObjectId
+from app.database.sessions import db
 from app.utils.helpers import admin_required
-from app.services.admin_service import get_all_reservations, create_user, delete_user, get_all_students, approve_reservation_service,reject_reservation_service
+from app.services.admin_service import process_slack_action, get_all_reservations, create_user, delete_user, get_all_students, approve_reservation_service,reject_reservation_service
 
 admin_bp = Blueprint('admin', __name__)
 
@@ -9,7 +10,6 @@ admin_bp = Blueprint('admin', __name__)
 async def get_reservations():
   try:  
     filters = request.args
-    print(request.headers['Role'])
     result = await get_all_reservations(filters)
     return jsonify(result), result["status_code"]
   except Exception as e:
@@ -60,3 +60,13 @@ async def reject_reservation(reservation_id):
     return jsonify(result), result['status_code']
   except Exception as e:
     return {"error": str(e), "status_code": 500}
+
+@admin_bp.route('/slack/actions', methods=['POST'])
+async def handle_slack_actions():
+    body = await request.form 
+    payload = body.get("payload")
+
+    if not payload:
+      return jsonify({"text": "Missing payload!"}), 400
+
+    return await process_slack_action(payload)

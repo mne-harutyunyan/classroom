@@ -1,6 +1,8 @@
 from bson import ObjectId
 from pymongo import ASCENDING
-
+import json
+from bson import ObjectId
+from quart import jsonify
 from app.models.user import User
 from app.database.sessions import db
 from app.services.sms_service import send_sms
@@ -115,3 +117,39 @@ async def reject_reservation_service(reservation_id):
     send_sms(student['phone_number'], "Your reservation request has been rejected.")
 
   return {"message": "Reservation rejected successfully.", "status_code": 200}
+
+async def process_slack_action(payload):
+    try:
+        data = json.loads(payload)
+        print("Parsed data:", data)
+    except Exception as e:
+        print(f"Error parsing JSON payload: {e}")
+        return jsonify({"text": "Invalid JSON format!"}), 400
+
+    actions = data.get("actions", [])
+    if not actions:
+        return jsonify({"text": "No actions found!"}), 400
+
+    action = actions[0].get("value")
+    reservation_id = data.get("callback_id")
+
+    if not reservation_id:
+        return jsonify({"text": "Missing reservation ID!"}), 400
+
+    reservations_collection = db.get_collection("reservations")
+
+    if action == "approve":
+        print(f"Reservation {reservation_id} approved!")
+        await reservations_collection.update_one(
+            {"_id": ObjectId(reservation_id)},
+            {"$set": {"status": "approved"}})
+        response_text = f"Reservation {reservation_id} approved!"
+    elif action == "reject":
+        print(f"Reservation {reservation_id} rejected!")
+        await reservations_collection.update_one(
+            {"_id": ObjectId(reservation_id)},
+            {"$set": {"status": "declined"}})
+        response_text = f"Reservation {reservation_id} rejected!"
+    else:
+        return jsonify({"text": "Invalid action!"}), 400
+    return jsonify({"text": response_text})
