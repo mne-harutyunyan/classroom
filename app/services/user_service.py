@@ -66,36 +66,32 @@ async def user_reject_reservation_service(reservation_id, student_code):
 
 async def get_student_reservations(filters: dict):
   reservations_collection = db.get_collection('reservations')
-
-  try:
-    page = int(filters.get("page", 1))
-    size = int(filters.get("size", 10))
-    if page < 1 or size < 1 or size > 100:
-      return {"status_code":400, "description":"Page must be >= 1 and size must be between 1 and 100."}
-    query = {"status": "approved"}
-
-    skip_count = (page - 1) * size
-
-    cursor = reservations_collection.find(query).sort("_id", ASCENDING).skip(skip_count).limit(size)
-    reservations = await cursor.to_list(length=size)
-
-    if not reservations:
-      return {"error": "No approved reservations found", "status_code": 404}
-
-    for reservation in reservations:
-      reservation["_id"] = str(reservation["_id"])
-
-    total_count = await reservations_collection.count_documents(query)
-    total_pages = (total_count + size - 1) // size
-
-    return {
-        "reservations": reservations,
-        "pagination": {
-            "total": total_count,
-            "page": page,
-            "size": size,
-            "total_pages": total_pages},
-        "status_code": 200}
   
-  except Exception as e:
-    return {"error": str(e), "status_code": 500}
+  page = int(filters.get("page", 1))
+  size = int(filters.get("size", 10))
+  if page < 1 or size < 1 or size > 100:
+    return {"status_code":400, "description":"Page must be >= 1 and size must be between 1 and 100."}
+  query = {"status": "approved"}
+
+  skip_count = (page - 1) * size
+
+  cursor = reservations_collection.find(query).sort("_id", ASCENDING).skip(skip_count).limit(size)
+  reservations = await cursor.to_list(length=size)
+
+  if not reservations:
+    return {"error": "No approved reservations found", "status_code": 404}
+
+  for reservation in reservations:
+    reservation["_id"] = str(reservation["_id"])
+
+  total_count = await reservations_collection.count_documents(query)
+  total_pages = (total_count + size - 1) // size
+
+  return {
+      "reservations": reservations,
+      "pagination": {
+          "total": total_count,
+          "page": page,
+          "size": size,
+          "total_pages": total_pages},
+      "status_code": 200}
