@@ -9,8 +9,7 @@ from app.services.admin_service import (
   delete_user,
   get_all_students,
   approve_reservation_service,
-  reject_reservation_service
-)
+  reject_reservation_service)
 
 admin_bp = Blueprint('admin', __name__)
 

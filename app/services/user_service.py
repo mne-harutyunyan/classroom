@@ -1,5 +1,5 @@
-from http import HTTPStatus
 from bson import ObjectId
+from http import HTTPStatus
 from datetime import datetime
 from pymongo import ASCENDING
 
@@ -18,16 +18,19 @@ async def is_time_slot_available(room_name: str, start_date: datetime, end_date:
     '$or': [
       {'startDate': {'$lt': end_date, '$gte': start_date}},
       {'endDate': {'$gt': start_date, '$lte': end_date}},
-      {'startDate': {'$lte': start_date}, 'endDate': {'$gte': end_date}}
-    ]
+      {'startDate': {'$lte': start_date}, 'endDate': {'$gte': end_date}}]
   }).to_list(length=None)
   
   return len(overlapping_reservations) == 0
 
 
 async def create_reservation(data: dict) -> dict:
-  reservation = Reservation(**data)
-
+  try:
+    reservation = Reservation(**data)
+  
+  except Exception as e:
+    return {"error": str(e), "status_code": HTTPStatus.BAD_REQUEST}
+  
   students_collection = db.get_collection('students')
   student = await students_collection.find_one({'student_code': reservation.student_code})
 
@@ -49,7 +52,7 @@ async def create_reservation(data: dict) -> dict:
 
   result = await reservations_collection.insert_one(reservation_dict)
   reservation_id = str(result.inserted_id)
-  # send_sms(student['phone_number'], "Reservation request submitted. Awaiting admin approval.")
+  send_sms(student['phone_number'], "Reservation request submitted. Awaiting admin approval.")
   message = f'''
   📢 New Reservation Request:\n
   👤 Student: {student["name"]} {student["surname"]}\n
@@ -153,6 +156,5 @@ async def get_student_reservations(filters: dict):
       "total": total_count,
       "page": page,
       "size": size,
-      "total_pages": total_pages
-    },
+      "total_pages": total_pages},
     "status_code": HTTPStatus.OK}

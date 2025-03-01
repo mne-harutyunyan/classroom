@@ -27,30 +27,37 @@ class User(BaseModel):
   @classmethod
   def validate_values(cls, value: str, info: str) -> str:
     if not value.strip():
-      abort(HTTPStatus.BAD_REQUEST, f"{info.field_name} field can't be empty.")
+      return abort(HTTPStatus.BAD_REQUEST, f"{info.field_name} field can't be empty.")
     if not 1 <= len(value) <= 50:
-      abort(HTTPStatus.BAD_REQUEST, f"{info.field_name} field should be between 1 and 50 characters in length.")
+      return abort(HTTPStatus.BAD_REQUEST, f"{info.field_name} field should be between 1 and 50 characters in length.")
     return value
   
   @field_validator('phone_number', mode='before')
   @classmethod
   def validate_phone_number(cls, phone_number: str) -> str:
     if not re.match(r"^\+\d{6,}$", phone_number):
-      abort(HTTPStatus.BAD_REQUEST, "Invalid phone number")
+      return abort(HTTPStatus.BAD_REQUEST, "Invalid phone number")
     return phone_number
+  
+  @field_validator('role', mode='before')
+  @classmethod
+  def validate_role(cls, role: str) -> str:
+    if role not in (Role.admin, Role.student):
+      return abort(HTTPStatus.BAD_REQUEST, f"Invalid role. Valid roles are {Role._member_names_}")
+    return role
   
   @field_validator('email', mode='before')
   @classmethod
   def validate_email(cls, email: str) -> str:
     email = email.strip().lower()
     if not email:
-      abort(HTTPStatus.BAD_REQUEST, "Email can't be empty.")
+      return abort(HTTPStatus.BAD_REQUEST, "Email can't be empty.")
 
     pattern = (r"^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*"
                r"@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+"
                r"[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$")
 
     if not re.match(pattern, email):
-      abort(HTTPStatus.BAD_REQUEST, "Invalid email format.")
+      return abort(HTTPStatus.BAD_REQUEST, "Invalid email format.")
 
     return email

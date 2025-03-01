@@ -1,5 +1,4 @@
 from http import HTTPStatus
-
 from twilio.rest import Client
 
 from app.config.settings import settings

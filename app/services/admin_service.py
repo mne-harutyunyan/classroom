@@ -74,14 +74,18 @@ async def get_all_reservations(filters: dict):
       "total": total_count,
       "page": page,
       "size": size,
-      "total_pages": total_pages
-    },
+      "total_pages": total_pages},
     "status_code": HTTPStatus.OK}
 
 
 async def create_user(data: dict):
   students_collection = db.get_collection('students')
-  student = User(**data)
+  try:
+    student = User(**data)
+  
+  except Exception as e:
+    return {"error": str(e), "status_code": HTTPStatus.BAD_REQUEST}
+    
   existing_student = await students_collection.find_one({'student_code': student.student_code})
 
   if existing_student:
@@ -131,8 +135,7 @@ async def approve_reservation_service(reservation_id):
 
   await reservations_collection.update_one(
     {'_id': ObjectId(reservation_id)},
-    {'$set': {'status': 'approved'}}
-  )
+    {'$set': {'status': 'approved'}})
 
   students_collection = db.get_collection('students')
   student = await students_collection.find_one({'student_code': reservation['student_code']})
@@ -155,8 +158,7 @@ async def reject_reservation_service(reservation_id):
 
   await reservations_collection.update_one(
     {'_id': ObjectId(reservation_id)},
-    {'$set': {'status': 'rejected'}}
-  )
+    {'$set': {'status': 'rejected'}})
 
   students_collection = db.get_collection('students')
   student = await students_collection.find_one({'student_code': reservation['student_code']})

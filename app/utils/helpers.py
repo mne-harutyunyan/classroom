@@ -1,5 +1,5 @@
-from http import HTTPStatus
 import httpx
+from http import HTTPStatus
 from functools import wraps
 from quart import request, jsonify
 

@@ -1,3 +1,4 @@
+import re
 from enum import Enum
 from bson import ObjectId
 from typing import Optional
@@ -63,7 +64,7 @@ class Reservation(BaseModel):
   @classmethod
   def validate_values(cls, value: str, info: str) -> str:
     if not value.strip():
-      abort(HTTPStatus.BAD_REQUEST, f"{info.field_name} field can't be empty.")
+      return abort(HTTPStatus.BAD_REQUEST, f"{info.field_name} field can't be empty.")
     if not 1 <= len(value) <= 50:
-      abort(HTTPStatus.BAD_REQUEST, f"{info.field_name} field should be between 1 and 50 characters in length.")
+      return abort(HTTPStatus.BAD_REQUEST, f"{info.field_name} field should be between 1 and 50 characters in length.")
     return value
