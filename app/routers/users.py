@@ -1,6 +1,10 @@
+from http import HTTPStatus
 from quart import Blueprint, request, jsonify
 
-from app.services.user_service import create_reservation, user_reject_reservation_service, get_student_reservations
+from app.services.user_service import (
+  create_reservation,
+  user_reject_reservation_service,
+  get_student_reservations)
 
 user_bp = Blueprint('user', __name__)
 
@@ -11,7 +15,7 @@ async def create():
     message = await create_reservation(data)
     return jsonify(message), message['status_code']
   except Exception as e:
-    return {"error": str(e), "status_code": 500}
+    return {"error": str(e), "status_code": HTTPStatus.INTERNAL_SERVER_ERROR}
 
 @user_bp.route('/reject/<reservation_id>', methods=['POST'])
 async def user_reject_reservation(reservation_id):
@@ -19,17 +23,17 @@ async def user_reject_reservation(reservation_id):
     data = await request.get_json()
     student_code = data.get('student_code')
     if not student_code:
-      return jsonify({"error": "Student code is required."}), 400
+      return jsonify({"error": "Student code is required."}), HTTPStatus.BAD_REQUEST
     result = await user_reject_reservation_service(reservation_id, student_code)
     return jsonify(result), result['status_code']
   except Exception as e:
-    return {"error": str(e), "status_code": 500}
+    return {"error": str(e), "status_code": HTTPStatus.INTERNAL_SERVER_ERROR}
 
 @user_bp.route('/', methods=['GET'])
 async def get_approved_reservations():
   try:
     filters = request.args
-    result = await get_student_reservations( filters)
+    result = await get_student_reservations(filters)
     return jsonify(result), result["status_code"]
   except Exception as e:
-    return {"error": str(e), "status_code": 500}
+    return {"error": str(e), "status_code": HTTPStatus.INTERNAL_SERVER_ERROR}

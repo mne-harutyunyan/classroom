@@ -1,17 +1,20 @@
+from http import HTTPStatus
 import httpx
 from functools import wraps
 from quart import request, jsonify
 
 from app.config.settings import settings
 
+
 def admin_required(func):
   @wraps(func)
   async def wrapper(*args, **kwargs):
     user_role = request.headers.get("Role")
-    if user_role != "admin":
-      return jsonify({"error": "Admin access required"}), 403 
+    if str(user_role).lower() != "admin":
+      return jsonify({"error": "Admin access required"}), HTTPStatus.FORBIDDEN
     return await func(*args, **kwargs)
   return wrapper
+
 
 async def send_slack_notification(message: str, reservation_id: str):
   if settings.SLACK_WEBHOOK_URL:
@@ -41,8 +44,6 @@ async def send_slack_notification(message: str, reservation_id: str):
     }
     async with httpx.AsyncClient() as client:
       response = await client.post(settings.SLACK_WEBHOOK_URL, json=payload)
-      print(f"Status Code: {response.status_code}")
-      print(f"Response Text: {response.text}")
-      return response.status_code == 200, response.text
+      return response.status_code == HTTPStatus.OK, response.text
   else:
     raise ValueError("Slack webhook URL is not configured.")
