@@ -13,14 +13,18 @@ A modern, scalable, and efficient backend for academyclassrooms.com, built using
 🔹 Manage classrooms and students data (Add, Edit, Delete).
 
 ⚙️ Setup & Installation
+
 📥 Install Dependencies
+
 ```bash
 pip install -r requirements.txt
 
 ▶️ Run the Server with Uvicorn
+
 ```bash
 uvicorn app:app --host 0.0.0.0 --port 8000
 
 🌍 Test Slack Integration with Ngrok
+
 ```bash
 ngrok http 8000
