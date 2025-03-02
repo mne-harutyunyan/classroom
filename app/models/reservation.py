@@ -1,4 +1,3 @@
-import re
 from enum import Enum
 from bson import ObjectId
 from typing import Optional
