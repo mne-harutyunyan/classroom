@@ -1,4 +1,4 @@
-### 🎓 Academy Classrooms Backend
+## 🎓 Academy Classrooms Backend
 A modern, scalable, and efficient backend for academyclassrooms.com, built using Quart (an asynchronous Python web framework) and MongoDB. This API streamlines classroom reservations, ensuring smooth interaction between students and administrators.
 
 🚀 Features
@@ -12,9 +12,9 @@ A modern, scalable, and efficient backend for academyclassrooms.com, built using
 🔹 Receive Slack notifications for new reservation requests.
 🔹 Manage classrooms and students data (Add, Edit, Delete).
 
-### ⚙️ Setup & Installation
+## ⚙️ Setup & Installation
 
-## 📥 Install Dependencies
+### 📥 Install Dependencies
 
 ```bash
 pip install -r requirements.txt
