@@ -14,7 +14,7 @@ A modern, scalable, and efficient backend for academyclassrooms.com, built using
 
 ⚙️ Setup & Installation
 
-📥 Install Dependencies
+##📥 Install Dependencies
 
 ```bash
 pip install -r requirements.txt
